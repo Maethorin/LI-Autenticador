@@ -1,3 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from autenticador import requer_login
+import autenticador
+
+
+def autenticacao():
+    return autenticador.Autenticacao()
