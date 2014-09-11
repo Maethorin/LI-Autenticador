@@ -9,9 +9,10 @@ from autenticacao_api import configuracao
 class ErrosHTTP(object):
     @staticmethod
     def erro_400():
+        chaves = ["{} XXXXXXXX-YYYY-ZZZZ-AAAA-BBBBBBBBBBBB".format(chave) for chave in configuracao.VALORES.keys()]
         response = jsonify({
-            'erro': u"Adicione um cabeçalho Authorization com chave_api e chave_aplicacao para acessar essa api",
-            'modelo': "Authorization: chave_api XXXXXXXX-YYYY-ZZZZ-AAAA-BBBBBBBBBBBB chave_aplicacao UUUUUUUU-AAAA-WWWW-BBBB-HHHHHHHHHHHH"
+            'erro': u"Adicione um cabeçalho Authorization com {} para acessar essa api".format(", ".join(configuracao.VALORES.keys())),
+            'modelo': "Authorization: {}".format(" ".join(chaves))
         })
         response.status_code = 400
         return response
