@@ -57,7 +57,7 @@ class Autenticacao(object):
                 resultado[chave] = authorization[indice]
         return resultado
 
-    def requer_login(self, function):
+    def requerido(self, function):
         @wraps(function)
         def decorated(*args, **kwargs):
             chaves = self.extrai_chaves(self.VALORES.keys(), request.headers)
