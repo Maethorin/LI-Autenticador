@@ -1,0 +1,33 @@
+language: python
+python:
+  - '2.7'
+
+install:
+  - pip install -e .
+  - pip install coveralls
+  - pip install sure
+  - pip install py-inspector
+
+script:
+  - rm -rf .coverage
+  - coverage2 run --branch `which nosetests`
+  - coverage2 report -m --fail-under=70
+
+after_success:
+  - coveralls
+
+deploy:
+  provider: pypi
+  user: lojaintegrada
+  password:
+    secure: WlsDSWqiZOdC9bgIVsz48mVCkA8TfTXsz2nhN8q4dWtZgIRZMATWDSPAOWLpiRzNmTYadcpu6xZve9J6vyEg0JPh2V+KFPSWzex8RNySFpUwNhbKotPtMg44e43wfK6L05apTc+CoPfyOdi55x2ykjJToNY3c437vT7/krHl4Jo=
+  on:
+    tags: true
+    repo: lojaintegrada/LI-Autenticador
+    all_branches: true
+
+notifications:
+  email:
+    recipients:
+      - contato@awsli.com.br
+      - marcio.duarte@lojaintegrada.com.br

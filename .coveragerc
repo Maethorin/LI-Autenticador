@@ -1,0 +1,7 @@
+[run]
+branch = True
+omit =
+    */python?.?/*
+    */site-packages/nose/*
+    */nosetests
+    */tests/*

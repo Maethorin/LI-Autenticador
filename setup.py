@@ -53,5 +53,5 @@ setup(
         ],
     packages=find_packages('src'),
     package_dir={'': 'src'},
-    install_requires=['distribute', 'flask'],
+    install_requires=['distribute', 'flask', 'li-common'],
 )
