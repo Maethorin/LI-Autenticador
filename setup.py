@@ -33,7 +33,7 @@ def read(fname):
 
 setup(
     name='li-autenticador',
-    version='0.0.2',
+    version='0.0.3',
     url='https://github.com/lojaintegrada/LI-Autenticador',
     license='MIT',
     description=u'Engine de autenticação da Loja Integrada',
