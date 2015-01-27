@@ -3,5 +3,5 @@
 import autenticador
 
 
-def autenticacao():
-    return autenticador.Autenticacao()
+def autenticacao(nome_api=None):
+    return autenticador.Autenticacao(nome_api)
