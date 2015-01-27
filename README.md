@@ -2,8 +2,8 @@
 
 ## Versão:
 
-[![PyPi version](https://pypip.in/v/li-autenticador/badge.png)](https://pypi.python.org/pypi/li-autenticador)
-[![PyPi downloads](https://pypip.in/d/li-autenticador/badge.png)](https://pypi.python.org/pypi/li-autenticador)
+[![PyPi version](https://pypip.in/v/li-autenticador/badge.png?style=flat)](https://pypi.python.org/pypi/li-autenticador)
+[![PyPi downloads](https://pypip.in/d/li-autenticador/badge.png?style=flat)](https://pypi.python.org/pypi/li-autenticador)
 
 
 ## Build Status
