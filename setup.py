@@ -41,12 +41,11 @@ setup(
     author_email='suporte@lojaintegrada.com.br',
     long_description=read('README.md'),
     classifiers=[
-        "Development Status :: 2 - Pre-Alpha",
+        "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2.6",
         "Programming Language :: Python :: 2.7",
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: Internet",
