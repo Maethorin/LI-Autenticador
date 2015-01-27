@@ -24,7 +24,7 @@ Em um módulo que seja acessível a API, de preferência no mesmo onde a App Fla
 
 módulo app.py
 
-´´´python
+```python
 from flask import Flask
 import autenticacao_api
 
@@ -33,17 +33,17 @@ autenticacao = autenticacao_api.autenticacao()
 autenticacao.define_valor('chave_necessario', 'VALOR-NECESSARIO')
 
 app_flask = Flask("App")
-´´´
+```
 
 No código que precise de autenticação, faça:
 
 módulo recursos.py
 
-´´´python
+```python
 import app
 
 @app.app_flask.route("/secure")
 @app.autenticacao.requerido
 def secure():
     return "Autenticado!"
-´´´
+```
