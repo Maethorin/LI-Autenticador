@@ -13,8 +13,9 @@ class ErrosHTTP(object):
     Encapsula métodos para os dois tipos de erro, 400 e 401
     """
 
-    def __init__(self, nome_api=None):
+    def __init__(self, nome_api=None, versao_api=None):
         self.nome_api = nome_api
+        self.versao_api = versao_api
 
     def erro_400(self, chaves):
         """
@@ -28,7 +29,7 @@ class ErrosHTTP(object):
         conteudo = {
             'mensagem': u"Adicione um cabeçalho Authorization com {} para acessar essa api. Ex.: Authorization: {}".format(", ".join(chaves), " ".join(modelos))
         }
-        return serializacao.ResultadoDeApi.resposta(conteudo, self.nome_api or 'Autenticador', '0.0.1', 400)
+        return serializacao.ResultadoDeApi.resposta(conteudo, self.nome_api or 'Autenticador', self.versao_api or '0.0.1', 400)
 
     def erro_401(self):
         """
@@ -39,15 +40,16 @@ class ErrosHTTP(object):
         conteudo = {
             'mensagem': u"Você não está autorizado a acessar essa url."
         }
-        return serializacao.ResultadoDeApi.resposta(conteudo, self.nome_api or 'Autenticador', '0.0.1', 401)
+        return serializacao.ResultadoDeApi.resposta(conteudo, self.nome_api or 'Autenticador', self.versao_api or '0.0.1', 401)
 
 
 class Autenticacao(object):
     """
     Fornece as funcionalidades para executar a autenticação da API
     """
-    def __init__(self, nome_api=None):
+    def __init__(self, nome_api=None, versao_api=None):
         self.nome_api = nome_api
+        self.versao_api = versao_api
         self.valores = {}
 
     def define_valor(self, nome, valor):
@@ -113,9 +115,9 @@ class Autenticacao(object):
             """
             chaves = self.extrai_chaves(self.valores.keys(), request.headers)
             if not chaves:
-                return ErrosHTTP(self.nome_api).erro_400(self.valores.keys())
+                return ErrosHTTP(self.nome_api, self.versao_api).erro_400(self.valores.keys())
             if not self.chaves_validas(chaves):
-                return ErrosHTTP(self.nome_api).erro_401()
+                return ErrosHTTP(self.nome_api, self.versao_api).erro_401()
             return function(*args, **kwargs)
 
         return decorated

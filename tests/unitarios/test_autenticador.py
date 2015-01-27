@@ -33,6 +33,11 @@ class ImportandoModulo(unittest.TestCase):
         autenticacao = autenticacao_api.autenticacao('api_teste')
         autenticacao.nome_api.should.be.equal('api_teste')
 
+    def test_deve_poder_passar_a_versao_da_api(self):
+        import autenticacao_api
+        autenticacao = autenticacao_api.autenticacao(versao_api='1.01')
+        autenticacao.versao_api.should.be.equal('1.01')
+
 
 class TestRetornaChaves(TestBase):
     def test_obtendo_chaves_com_chave_api_apenas(self):
@@ -183,3 +188,23 @@ class TestUsandoDecorator(TestBase):
         def requer_autenticacao():
             pass
         requer_autenticacao().should.be.equal(({'metadados': {'versao': '0.0.1', 'resultado': 'request_invalido', 'api': 'api-teste'}, 'request_invalido': {'mensagem': u'Adicione um cabe\xe7alho Authorization com chave_api para acessar essa api. Ex.: Authorization: chave_api XXXXXXXX-YYYY-ZZZZ-AAAA-BBBBBBBBBBBB'}}, 400))
+
+    @patch("autenticacao_api.autenticador.request", RequestMock)
+    def test_deve_retornar_401_com_versao_api_se_for_passado(self):
+        self.autenticacao = autenticador.Autenticacao(versao_api='0.1')
+        self.autenticacao.define_valor('chave_api', 'a-chave-api-eh-outra')
+
+        @self.autenticacao.requerido
+        def requer_autenticacao():
+            pass
+        requer_autenticacao().should.be.equal(({'metadados': {'versao': '0.1', 'resultado': 'nao_autorizado', 'api': 'Autenticador'}, 'nao_autorizado': {'mensagem': u'Voc\xea n\xe3o est\xe1 autorizado a acessar essa url.'}}, 401))
+
+    @patch("autenticacao_api.autenticador.request", RequestMockSemAuthorization)
+    def test_deve_retornar_400_com_versao_api_se_for_passado(self):
+        self.autenticacao = autenticador.Autenticacao(versao_api='0.1')
+        self.autenticacao.define_valor('chave_api', 'a-chave-api-eh-outra')
+
+        @self.autenticacao.requerido
+        def requer_autenticacao():
+            pass
+        requer_autenticacao().should.be.equal(({'metadados': {'versao': '0.1', 'resultado': 'request_invalido', 'api': 'Autenticador'}, 'request_invalido': {'mensagem': u'Adicione um cabe\xe7alho Authorization com chave_api para acessar essa api. Ex.: Authorization: chave_api XXXXXXXX-YYYY-ZZZZ-AAAA-BBBBBBBBBBBB'}}, 400))
