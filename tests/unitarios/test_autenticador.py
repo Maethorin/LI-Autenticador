@@ -148,63 +148,109 @@ class TestUsandoDecorator(TestBase):
         assertiva['chamado'].should.be.truthy
 
     @patch("autenticacao_api.autenticador.request", RequestMock)
-    def test_deve_retornar_401_se_nao_for_chave_valida(self):
+    @patch("autenticacao_api.autenticador.make_response")
+    def test_deve_retornar_401_se_nao_for_chave_valida(self, response_mock):
+        response_mock.return_value = 'ERRO 401'
         assertiva = {'nao_chamado': True}
         self.autenticacao.define_valor('chave_api', 'a-chave-api-eh-outra')
 
         @self.autenticacao.requerido
         def requer_autenticacao(assertiva_passada):
             assertiva_passada['nao_chamado'] = False
-        requer_autenticacao(assertiva).should.be.equal(({'metadados': {'versao': '0.0.1', 'resultado': 'nao_autorizado', 'api': 'Autenticador'}, 'nao_autorizado': {'mensagem': u'Voc\xea n\xe3o est\xe1 autorizado a acessar essa url.'}}, 401))
+
+        requer_autenticacao(assertiva).should.be.equal('ERRO 401')
+        response_mock.assert_called_with(
+            '{"metadados": {"versao": "0.0.1", "resultado": "nao_autorizado", "api": "Autenticador"}, "nao_autorizado": {"mensagem": "Voc\\u00ea n\\u00e3o est\\u00e1 autorizado a acessar essa url."}}',
+            401,
+            {'Content-Type': 'text/json; charset=utf-8'}
+        )
         assertiva['nao_chamado'].should.be.truthy
 
     @patch("autenticacao_api.autenticador.request", RequestMockSemAuthorization)
-    def test_deve_retornar_400_se_nao_tiver_chave_no_header(self):
+    @patch("autenticacao_api.autenticador.make_response")
+    def test_deve_retornar_400_se_nao_tiver_chave_no_header(self, response_mock):
+        response_mock.return_value = 'ERRO 400'
         assertiva = {'nao_chamado': True}
         self.autenticacao.define_valor('chave_api', 'a-chave-api-eh-outra')
 
         @self.autenticacao.requerido
         def requer_autenticacao(assertiva_passada):
             assertiva_passada['nao_chamado'] = False
-        requer_autenticacao(assertiva).should.be.equal(({'metadados': {'versao': '0.0.1', 'resultado': 'request_invalido', 'api': 'Autenticador'}, 'request_invalido': {'mensagem': u'Adicione um cabe\xe7alho Authorization com chave_api para acessar essa api. Ex.: Authorization: chave_api XXXXXXXX-YYYY-ZZZZ-AAAA-BBBBBBBBBBBB'}}, 400))
+        requer_autenticacao(assertiva).should.be.equal('ERRO 400')
         assertiva['nao_chamado'].should.be.truthy
+        response_mock.assert_called_with(
+            '{"metadados": {"versao": "0.0.1", "resultado": "request_invalido", "api": "Autenticador"}, "request_invalido": {"mensagem": "Adicione um cabe\\u00e7alho Authorization com chave_api para acessar essa api. Ex.: Authorization: chave_api XXXXXXXX-YYYY-ZZZZ-AAAA-BBBBBBBBBBBB"}}',
+            400,
+            {'Content-Type': 'text/json; charset=utf-8'}
+        )
 
     @patch("autenticacao_api.autenticador.request", RequestMock)
-    def test_deve_retornar_401_com_nome_api_se_for_passado(self):
+    @patch("autenticacao_api.autenticador.make_response")
+    def test_deve_retornar_401_com_nome_api_se_for_passado(self, response_mock):
+        response_mock.return_value = 'ERRO 401'
         self.autenticacao = autenticador.Autenticacao('api-teste')
         self.autenticacao.define_valor('chave_api', 'a-chave-api-eh-outra')
 
         @self.autenticacao.requerido
         def requer_autenticacao():
             pass
-        requer_autenticacao().should.be.equal(({'metadados': {'versao': '0.0.1', 'resultado': 'nao_autorizado', 'api': 'api-teste'}, 'nao_autorizado': {'mensagem': u'Voc\xea n\xe3o est\xe1 autorizado a acessar essa url.'}}, 401))
+
+        requer_autenticacao().should.be.equal('ERRO 401')
+        response_mock.assert_called_with(
+            '{"metadados": {"versao": "0.0.1", "resultado": "nao_autorizado", "api": "api-teste"}, "nao_autorizado": {"mensagem": "Voc\\u00ea n\\u00e3o est\\u00e1 autorizado a acessar essa url."}}',
+            401,
+            {'Content-Type': 'text/json; charset=utf-8'}
+        )
 
     @patch("autenticacao_api.autenticador.request", RequestMockSemAuthorization)
-    def test_deve_retornar_400_com_nome_api_se_for_passado(self):
+    @patch("autenticacao_api.autenticador.make_response")
+    def test_deve_retornar_400_com_nome_api_se_for_passado(self, response_mock):
+        response_mock.return_value = 'ERRO 400'
         self.autenticacao = autenticador.Autenticacao('api-teste')
         self.autenticacao.define_valor('chave_api', 'a-chave-api-eh-outra')
 
         @self.autenticacao.requerido
         def requer_autenticacao():
             pass
-        requer_autenticacao().should.be.equal(({'metadados': {'versao': '0.0.1', 'resultado': 'request_invalido', 'api': 'api-teste'}, 'request_invalido': {'mensagem': u'Adicione um cabe\xe7alho Authorization com chave_api para acessar essa api. Ex.: Authorization: chave_api XXXXXXXX-YYYY-ZZZZ-AAAA-BBBBBBBBBBBB'}}, 400))
+        requer_autenticacao().should.be.equal('ERRO 400')
+        response_mock.assert_called_with(
+            '{"metadados": {"versao": "0.0.1", "resultado": "request_invalido", "api": "api-teste"}, "request_invalido": {"mensagem": "Adicione um cabe\\u00e7alho Authorization com chave_api para acessar essa api. Ex.: Authorization: chave_api XXXXXXXX-YYYY-ZZZZ-AAAA-BBBBBBBBBBBB"}}',
+            400,
+            {'Content-Type': 'text/json; charset=utf-8'}
+        )
 
     @patch("autenticacao_api.autenticador.request", RequestMock)
-    def test_deve_retornar_401_com_versao_api_se_for_passado(self):
+    @patch("autenticacao_api.autenticador.make_response")
+    def test_deve_retornar_401_com_versao_api_se_for_passado(self, response_mock):
+        response_mock.return_value = 'ERRO 401'
         self.autenticacao = autenticador.Autenticacao(versao_api='0.1')
         self.autenticacao.define_valor('chave_api', 'a-chave-api-eh-outra')
 
         @self.autenticacao.requerido
         def requer_autenticacao():
             pass
-        requer_autenticacao().should.be.equal(({'metadados': {'versao': '0.1', 'resultado': 'nao_autorizado', 'api': 'Autenticador'}, 'nao_autorizado': {'mensagem': u'Voc\xea n\xe3o est\xe1 autorizado a acessar essa url.'}}, 401))
+
+        requer_autenticacao().should.be.equal('ERRO 401')
+        response_mock.assert_called_with(
+            '{"metadados": {"versao": "0.1", "resultado": "nao_autorizado", "api": "Autenticador"}, "nao_autorizado": {"mensagem": "Voc\\u00ea n\\u00e3o est\\u00e1 autorizado a acessar essa url."}}',
+            401,
+            {'Content-Type': 'text/json; charset=utf-8'}
+        )
 
     @patch("autenticacao_api.autenticador.request", RequestMockSemAuthorization)
-    def test_deve_retornar_400_com_versao_api_se_for_passado(self):
+    @patch("autenticacao_api.autenticador.make_response")
+    def test_deve_retornar_400_com_versao_api_se_for_passado(self, response_mock):
+        response_mock.return_value = 'ERRO 400'
         self.autenticacao = autenticador.Autenticacao(versao_api='0.1')
         self.autenticacao.define_valor('chave_api', 'a-chave-api-eh-outra')
 
         @self.autenticacao.requerido
         def requer_autenticacao():
             pass
-        requer_autenticacao().should.be.equal(({'metadados': {'versao': '0.1', 'resultado': 'request_invalido', 'api': 'Autenticador'}, 'request_invalido': {'mensagem': u'Adicione um cabe\xe7alho Authorization com chave_api para acessar essa api. Ex.: Authorization: chave_api XXXXXXXX-YYYY-ZZZZ-AAAA-BBBBBBBBBBBB'}}, 400))
+
+        requer_autenticacao().should.be.equal('ERRO 400')
+        response_mock.assert_called_with(
+            '{"metadados": {"versao": "0.1", "resultado": "request_invalido", "api": "Autenticador"}, "request_invalido": {"mensagem": "Adicione um cabe\\u00e7alho Authorization com chave_api para acessar essa api. Ex.: Authorization: chave_api XXXXXXXX-YYYY-ZZZZ-AAAA-BBBBBBBBBBBB"}}',
+            400,
+            {'Content-Type': 'text/json; charset=utf-8'}
+        )

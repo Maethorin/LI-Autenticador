@@ -4,7 +4,7 @@ Funcionalidades para implementar uma autenticação via chave no header para uma
 """
 
 from functools import wraps
-from flask import request
+from flask import request, make_response
 from li_common.padroes import serializacao
 
 
@@ -29,7 +29,9 @@ class ErrosHTTP(object):
         conteudo = {
             'mensagem': u"Adicione um cabeçalho Authorization com {} para acessar essa api. Ex.: Authorization: {}".format(", ".join(chaves), " ".join(modelos))
         }
-        return serializacao.ResultadoDeApi.resposta(conteudo, self.nome_api or 'Autenticador', self.versao_api or '0.0.1', 400)
+        conteudo, status = serializacao.ResultadoDeApi.resposta(conteudo, self.nome_api or 'Autenticador', self.versao_api or '0.0.1', 400)
+        headers = {'Content-Type': 'text/json; charset=utf-8'}
+        return make_response(conteudo, status, headers)
 
     def erro_401(self):
         """
@@ -40,7 +42,9 @@ class ErrosHTTP(object):
         conteudo = {
             'mensagem': u"Você não está autorizado a acessar essa url."
         }
-        return serializacao.ResultadoDeApi.resposta(conteudo, self.nome_api or 'Autenticador', self.versao_api or '0.0.1', 401)
+        conteudo, status = serializacao.ResultadoDeApi.resposta(conteudo, self.nome_api or 'Autenticador', self.versao_api or '0.0.1', 401)
+        headers = {'Content-Type': 'text/json; charset=utf-8'}
+        return make_response(conteudo, status, headers)
 
 
 class Autenticacao(object):
