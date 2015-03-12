@@ -26,3 +26,9 @@ notifications:
     recipients:
     - contato@awsli.com.br
     - marcio.duarte@lojaintegrada.com.br
+  hipchat:
+    rooms:
+      secure: orPOhLS+hrBAxssYNzC/7/BsPuXsC2YCLi7Y2LrAPne8b2a12B96KrfUNh2IuGpJEnsz8gnXXoAwKl5J5SIBoj/m+h6K3j6XniOLnh6kCBSahpubA+tHMBoDNbzJRcAnkBjCIY1s7O5dnv7UyTvjYwIjRRwxE1W8Dk/ppZpUQD8=
+    template:
+      - '%{result} - %{repository_name}#%{build_number} (%{branch} - %{commit} : %{author}) (<a href="%{build_url}">Details</a>/<a href="%{compare_url}">Change view</a>)'
+    format: html
