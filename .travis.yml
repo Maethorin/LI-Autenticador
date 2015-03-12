@@ -8,8 +8,7 @@ install:
 - pip install py-inspector
 script:
 - rm -rf .coverage
-- coverage2 run --branch `which nosetests`
-- coverage2 report -m --fail-under=70
+- make test
 after_success:
 - coveralls
 deploy:

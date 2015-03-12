@@ -1,7 +1,4 @@
 [run]
 branch = True
-omit =
-    */python?.?/*
-    */site-packages/nose/*
-    */nosetests
-    */tests/*
+source =
+    autenticacao_api
