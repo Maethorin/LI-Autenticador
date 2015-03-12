@@ -5,6 +5,7 @@ from mock import patch
 from py_inspector import verificadores
 
 from autenticacao_api import autenticador
+from tests.unitarios import base
 
 
 class TestBase(unittest.TestCase):
@@ -13,13 +14,13 @@ class TestBase(unittest.TestCase):
         self.autenticacao = autenticador.Autenticacao()
 
 
-class ValidandoPython(unittest.TestCase, verificadores.TestValidacaoPython):
-    def test_valida_pep8_em_autenticador(self):
-        arquivo = autenticador.__file__.replace('pyc', 'py')
+class ValidandoPython(base.ValidandoPython):
+    def test_valida_pep8_em_cadastro(self):
+        arquivo = autenticador.__file__.replace("pyc", "py")
         self.validacao_pep8([arquivo])
 
-    def test_valida_pylint_em_autenticador(self):
-        arquivo = autenticador.__file__.replace('pyc', 'py')
+    def test_valida_pylint_em_cadastro(self):
+        arquivo = autenticador.__file__.replace("pyc", "py")
         self.validacao_pylint([arquivo])
 
 
