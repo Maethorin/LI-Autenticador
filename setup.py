@@ -33,7 +33,7 @@ def read(fname):
 
 setup(
     name='li-autenticador',
-    version='0.0.5',
+    version='0.0.6',
     url='https://github.com/lojaintegrada/LI-Autenticador',
     license='MIT',
     description=u'Engine de autenticação da Loja Integrada',
@@ -52,5 +52,5 @@ setup(
         ],
     packages=find_packages('src'),
     package_dir={'': 'src'},
-    install_requires=['distribute', 'flask', 'li-common'],
+    install_requires=['distribute'],
 )
