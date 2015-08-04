@@ -9,7 +9,6 @@ from li_common.padroes import serializacao
 from repositories.plataforma.models import Contrato
 
 
-
 class ErrosHTTP(object):
     """
     Encapsula métodos para os dois tipos de erro, 400 e 401
@@ -111,7 +110,11 @@ class Autenticacao(object):
         return resultado
 
     def retorna_whitelabel_id(self, chaves):
-
+        """
+        retorna_whitelabel_id
+        :param chaves: chaves
+        :return: id
+        """
         if chaves.get("chave_whitelabel"):
             try:
                 contrato = Contrato.objects.only("id").get(

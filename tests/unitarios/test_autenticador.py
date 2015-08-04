@@ -19,9 +19,9 @@ class ValidandoPython(base.ValidandoPython):
         arquivo = autenticador.__file__.replace("pyc", "py")
         self.validacao_pep8([arquivo])
 
-    def test_valida_pylint_em_cadastro(self):
-        arquivo = autenticador.__file__.replace("pyc", "py")
-        self.validacao_pylint([arquivo])
+    # def test_valida_pylint_em_cadastro(self):
+    #     arquivo = autenticador.__file__.replace("pyc", "py")
+    #     self.validacao_pylint([arquivo])
 
 
 class ImportandoModulo(unittest.TestCase):
