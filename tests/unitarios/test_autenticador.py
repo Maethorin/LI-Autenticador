@@ -19,9 +19,9 @@ class ValidandoPython(base.ValidandoPython):
         arquivo = autenticador.__file__.replace("pyc", "py")
         self.validacao_pep8([arquivo])
 
-    # def test_valida_pylint_em_cadastro(self):
-    #     arquivo = autenticador.__file__.replace("pyc", "py")
-    #     self.validacao_pylint([arquivo])
+    def test_valida_pylint_em_cadastro(self):
+        arquivo = autenticador.__file__.replace("pyc", "py")
+        self.validacao_pylint([arquivo])
 
 
 class ImportandoModulo(unittest.TestCase):
@@ -103,6 +103,11 @@ class TestComparaChaves(TestBase):
         self.autenticacao.define_valor('ZAS', 'Valor Zas')
         self.autenticacao.valores.should.be.equal({'ZAS': 'Valor Zas'})
 
+    def test_define_chave_como_lista(self):
+        self.autenticacao.valores.should.be.empty
+        self.autenticacao.define_valor('ZAS', ['Valor 1', 'Valor 2', 'Valor 3'])
+        self.autenticacao.valores.should.be.equal({'ZAS':  ['Valor 1', 'Valor 2', 'Valor 3']})
+
     def test_chaves_nao_possui_todos_os_itens(self):
         self.autenticacao.define_valor("teste-1", "valor-teste-1")
         self.autenticacao.define_valor("teste-2", "valor-teste-2")
@@ -115,10 +120,28 @@ class TestComparaChaves(TestBase):
         chaves = {"teste-1": "valor-teste-1", "teste-2": "valor-teste-2"}
         self.autenticacao.chaves_validas(chaves).should.be.true
 
+    def test_chaves_corretas_como_lista_1(self):
+        self.autenticacao.define_valor('teste-1', ['valor-teste-1', 'valor-teste-2', 'valor-teste-3'])
+        self.autenticacao.define_valor("teste-2", "valor-teste-4")
+        chaves = {"teste-1": "valor-teste-1", "teste-2": "valor-teste-4"}
+        self.autenticacao.chaves_validas(chaves).should.be.true
+
+    def test_chaves_corretas_como_lista_2(self):
+        self.autenticacao.define_valor('teste-1', ['valor-teste-1', 'valor-teste-2', 'valor-teste-3'])
+        self.autenticacao.define_valor("teste-2", "valor-teste-4")
+        chaves = {"teste-1": "valor-teste-3", "teste-2": "valor-teste-4"}
+        self.autenticacao.chaves_validas(chaves).should.be.true
+
     def test_chaves_incorretas_de_primeira(self):
         self.autenticacao.define_valor("teste-1", "valor-teste-1")
         self.autenticacao.define_valor("teste-2", "valor-teste-2")
         chaves = {"teste-1": "valor-teste-0", "teste-2": "valor-teste-2"}
+        self.autenticacao.chaves_validas(chaves).should.be.false
+
+    def test_chaves_incorretas_como_lista(self):
+        self.autenticacao.define_valor('teste-1', ['valor-teste-1', 'valor-teste-2', 'valor-teste-3'])
+        self.autenticacao.define_valor("teste-2", "valor-teste-4")
+        chaves = {"teste-1": "valor-teste-0", "teste-2": "valor-teste-4"}
         self.autenticacao.chaves_validas(chaves).should.be.false
 
     def test_chaves_incorretas_de_segunda(self):

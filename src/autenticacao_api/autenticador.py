@@ -6,7 +6,6 @@ Funcionalidades para implementar uma autenticação via chave no header para uma
 from functools import wraps
 from flask import request, make_response
 from li_common.padroes import serializacao
-from repositories.plataforma.models import Contrato
 
 
 class ErrosHTTP(object):
@@ -61,7 +60,7 @@ class Autenticacao(object):
         """
         Define o uma chave/valor que deverá ser validada em um cabeçalho AUTHORIZATION. Esse método deve ser chamado na inicialização da api que precisa da autenticação.
         :param nome: O nome da chave que deverá existir no cabeçalho AUTHORIZATION
-        :type nome: str
+        :type nome: str, list
         :param valor: O valor da chave
         :type valor: str
         :return: None
@@ -79,7 +78,9 @@ class Autenticacao(object):
         for chave in self.valores.keys():
             if chave not in chaves:
                 return False
-            if chaves[chave] != self.valores[chave]:
+            if isinstance(self.valores[chave], str) and chaves[chave] != self.valores[chave]:
+                return False
+            if isinstance(self.valores[chave], list) and chaves[chave] not in self.valores[chave]:
                 return False
         return True
 
@@ -109,26 +110,6 @@ class Autenticacao(object):
                 resultado[chave] = authorization[indice]
         return resultado
 
-    def retorna_whitelabel_id(self, chaves):
-        """
-        retorna_whitelabel_id
-        :param chaves: chaves
-        :return: id
-        """
-        if chaves.get("chave_whitelabel"):
-            try:
-                contrato = Contrato.objects.only("id").get(
-                    chave=chaves.get("chave_whitelabel"),
-                    tipo='whitelabel',
-                    ativo=True)
-            except:
-                return None
-            else:
-                return contrato.id
-
-        else:
-            return None
-
     def requerido(self, function):
         """
         Decorator para ser usado na função que deve exigir autenticação.
@@ -143,33 +124,6 @@ class Autenticacao(object):
                 return ErrosHTTP(self.nome_api, self.versao_api).erro_400(self.valores.keys())
             if not self.chaves_validas(chaves):
                 return ErrosHTTP(self.nome_api, self.versao_api).erro_401()
-            return function(*args, **kwargs)
-
-        return decorated
-
-    def whitelabel_requerido(self, function):
-        """
-        Decorator para ser usado na função que deve exigir autenticação.
-        """
-
-        @wraps(function)
-        def decorated(*args, **kwargs):
-            """
-            Valida a autenticação para o método decorado
-            """
-            chaves = self.extrai_chaves(['chave_whitelabel'], request.headers)
-
-            if not chaves:
-                return ErrosHTTP(self.nome_api, self.versao_api).erro_400(self.valores.keys())
-
-            # Verifica se whitelabel esta valido
-            contrato_id = self.retorna_whitelabel_id(chaves)
-
-            if contrato_id is None:
-                return ErrosHTTP(self.nome_api, self.versao_api).erro_401()
-
-            kwargs['contrato_id'] = contrato_id
-
             return function(*args, **kwargs)
 
         return decorated
